@@ -16,12 +16,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "litelog-highlighter.highlightDebug",
-        "title": "LiteLog: Highlight Debug Logs"
+        "command": "litelog-highlighter.highlightPattern",
+        "title": "LiteLog: Highlight Lines by Pattern"
       },
       {
-        "command": "litelog-highlighter.highlightDemoProgram",
-        "title": "LiteLog: Highlight Demo Program Logs"
+        "command": "litelog-highlighter.clearHighlight",
+        "title": "LiteLog: Clear All Highlights"
       }
     ]
   },
