@@ -3,6 +3,18 @@
   "displayName": "litelog-highlighter",
   "description": "highlighter for litelog",
   "version": "0.0.1",
+  "publisher": "SwordofMorning",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SwordofMorning/litelog-highlighter"
+  },
+  "license": "MIT",
+  "keywords": [
+    "log",
+    "highlight",
+    "pattern",
+    "regex"
+  ],
   "engines": {
     "vscode": "^1.96.0"
   },
