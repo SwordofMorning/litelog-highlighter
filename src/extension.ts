@@ -1,37 +1,37 @@
 import * as vscode from 'vscode';
 
-// 定义装饰器
+// Define decorator
 let highlightDecorator: vscode.TextEditorDecorationType;
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('LiteLog Highlighter is now active!');
 
-    // 初始化装饰器
+    // Initialize decorator
     highlightDecorator = vscode.window.createTextEditorDecorationType({
-        backgroundColor: 'rgba(255, 255, 0, 0.2)', // 黄色背景
+        backgroundColor: 'rgba(255, 255, 0, 0.2)', // Yellow background
         isWholeLine: true,
         overviewRulerColor: 'rgba(255, 255, 0, 0.5)',
         overviewRulerLane: vscode.OverviewRulerLane.Right,
     });
 
-    // 注册高亮模式命令
+    // Register highlight pattern command
     let highlightPatternCommand = vscode.commands.registerCommand(
         'litelog-highlighter.highlightPattern',
         async () => {
             const editor = vscode.window.activeTextEditor;
             if (!editor) {
-                vscode.window.showInformationMessage('请打开一个日志文件');
+                vscode.window.showInformationMessage('Please open a log file');
                 return;
             }
 
-            // 获取用户输入的匹配模式
+            // Get user input for pattern matching
             const pattern = await vscode.window.showInputBox({
-                placeHolder: "输入要匹配的文本或正则表达式",
-                prompt: "将高亮包含此模式的所有行"
+                placeHolder: "Enter text or regex pattern to match",
+                prompt: "Will highlight all lines containing this pattern"
             });
 
             if (!pattern) {
-                return; // 用户取消输入
+                return; // User cancelled input
             }
 
             try {
@@ -39,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
                 const document = editor.document;
                 const decorationsArray: vscode.Range[] = [];
 
-                // 遍历所有行查找匹配
+                // Iterate through all lines to find matches
                 for (let i = 0; i < document.lineCount; i++) {
                     const line = document.lineAt(i);
                     if (line.text.match(regexp)) {
@@ -47,20 +47,20 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                 }
 
-                // 应用高亮
+                // Apply highlights
                 editor.setDecorations(highlightDecorator, decorationsArray);
                 vscode.window.showInformationMessage(
-                    `已高亮 ${decorationsArray.length} 行匹配内容`
+                    `Highlighted ${decorationsArray.length} matching lines`
                 );
             } catch (e) {
                 vscode.window.showErrorMessage(
-                    `无效的正则表达式: ${e instanceof Error ? e.message : String(e)}`
+                    `Invalid regular expression: ${e instanceof Error ? e.message : String(e)}`
                 );
             }
         }
     );
 
-    // 注册清除高亮命令
+    // Register clear highlight command
     let clearHighlightCommand = vscode.commands.registerCommand(
         'litelog-highlighter.clearHighlight',
         () => {
@@ -69,13 +69,13 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
-            // 清除所有高亮
+            // Clear all highlights
             editor.setDecorations(highlightDecorator, []);
-            vscode.window.showInformationMessage('已清除所有高亮');
+            vscode.window.showInformationMessage('All highlights cleared');
         }
     );
 
-    // 注册命令
+    // Register commands
     context.subscriptions.push(highlightPatternCommand);
     context.subscriptions.push(clearHighlightCommand);
 }
