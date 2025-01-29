@@ -3,6 +3,33 @@ import * as vscode from 'vscode';
 // Define decorator
 let highlightDecorator: vscode.TextEditorDecorationType;
 
+// Highlight function to reuse logic
+async function performHighlight(pattern: string, editor: vscode.TextEditor) {
+    try {
+        const regexp = new RegExp(pattern);
+        const document = editor.document;
+        const decorationsArray: vscode.Range[] = [];
+
+        // Iterate through all lines to find matches
+        for (let i = 0; i < document.lineCount; i++) {
+            const line = document.lineAt(i);
+            if (line.text.match(regexp)) {
+                decorationsArray.push(line.range);
+            }
+        }
+
+        // Apply highlights
+        editor.setDecorations(highlightDecorator, decorationsArray);
+        vscode.window.showInformationMessage(
+            `Highlighted ${decorationsArray.length} matching lines`
+        );
+    } catch (e) {
+        vscode.window.showErrorMessage(
+            `Invalid regular expression: ${e instanceof Error ? e.message : String(e)}`
+        );
+    }
+}
+
 export function activate(context: vscode.ExtensionContext) {
     console.log('LiteLog Highlighter is now active!');
 
@@ -34,29 +61,31 @@ export function activate(context: vscode.ExtensionContext) {
                 return; // User cancelled input
             }
 
-            try {
-                const regexp = new RegExp(pattern);
-                const document = editor.document;
-                const decorationsArray: vscode.Range[] = [];
+            await performHighlight(pattern, editor);
+        }
+    );
 
-                // Iterate through all lines to find matches
-                for (let i = 0; i < document.lineCount; i++) {
-                    const line = document.lineAt(i);
-                    if (line.text.match(regexp)) {
-                        decorationsArray.push(line.range);
-                    }
-                }
-
-                // Apply highlights
-                editor.setDecorations(highlightDecorator, decorationsArray);
-                vscode.window.showInformationMessage(
-                    `Highlighted ${decorationsArray.length} matching lines`
-                );
-            } catch (e) {
-                vscode.window.showErrorMessage(
-                    `Invalid regular expression: ${e instanceof Error ? e.message : String(e)}`
-                );
+    // Register highlight selected command
+    let highlightSelectedCommand = vscode.commands.registerCommand(
+        'litelog-highlighter.highlightSelected',
+        async () => {
+            const editor = vscode.window.activeTextEditor;
+            if (!editor) {
+                vscode.window.showInformationMessage('Please open a log file');
+                return;
             }
+
+            const selection = editor.selection;
+            const selectedText = editor.document.getText(selection);
+            
+            if (!selectedText) {
+                vscode.window.showInformationMessage('Please select some text first');
+                return;
+            }
+
+            // Escape special regex characters in the selected text
+            const escapedText = selectedText.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+            await performHighlight(escapedText, editor);
         }
     );
 
@@ -77,6 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Register commands
     context.subscriptions.push(highlightPatternCommand);
+    context.subscriptions.push(highlightSelectedCommand);
     context.subscriptions.push(clearHighlightCommand);
 }
 

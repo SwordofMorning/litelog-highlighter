@@ -32,10 +32,27 @@
         "title": "LiteLog: Highlight Lines by Pattern"
       },
       {
+        "command": "litelog-highlighter.highlightSelected",
+        "title": "LiteLog: Highlight Selected Content"
+      },
+      {
         "command": "litelog-highlighter.clearHighlight",
         "title": "LiteLog: Clear All Highlights"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "editorHasSelection",
+          "command": "litelog-highlighter.highlightSelected",
+          "group": "litelog@1"
+        },
+        {
+          "command": "litelog-highlighter.clearHighlight",
+          "group": "litelog@2"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
