@@ -2,7 +2,7 @@
   "name": "litelog-highlighter",
   "displayName": "litelog-highlighter",
   "description": "highlighter for litelog",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "SwordofMorning",
   "repository": {
     "type": "git",
@@ -26,11 +26,18 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "languages": [{
+    "languages": [
+      {
         "id": "log",
-        "extensions": [".log"],
-        "aliases": ["Log", "log"]
-    }],
+        "extensions": [
+          ".log"
+        ],
+        "aliases": [
+          "Log",
+          "log"
+        ]
+      }
+    ],
     "commands": [
       {
         "command": "litelog-highlighter.highlightPattern",
