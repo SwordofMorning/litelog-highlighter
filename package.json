@@ -26,41 +26,57 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "litelog-highlighter.highlightPattern",
-        "title": "LiteLog: Highlight Lines by Pattern"
-      },
-      {
-        "command": "litelog-highlighter.highlightRegex",
-        "title": "LiteLog: Highlight Lines by Regex"
-      },
-      {
-        "command": "litelog-highlighter.highlightSelected",
-        "title": "LiteLog: Highlight Selected Content"
-      },
-      {
-        "command": "litelog-highlighter.clearHighlight",
-        "title": "LiteLog: Clear All Highlights"
-      }
-    ],
-    "menus": {
-      "editor/context": [
+      "commands": [
         {
-          "when": "editorHasSelection",
-          "command": "litelog-highlighter.highlightSelected",
-          "group": "litelog@1"
+          "command": "litelog-highlighter.highlightPattern",
+          "title": "LiteLog: Highlight Lines by Pattern"
         },
         {
           "command": "litelog-highlighter.highlightRegex",
-          "group": "litelog@2"
+          "title": "LiteLog: Highlight Lines by Regex"
+        },
+        {
+          "command": "litelog-highlighter.highlightSelected",
+          "title": "LiteLog: Highlight Selected Content"
         },
         {
           "command": "litelog-highlighter.clearHighlight",
-          "group": "litelog@3"
+          "title": "LiteLog: Clear All Highlights"
+        },
+        {
+          "command": "litelog-highlighter.toggleLogLevel",
+          "title": "LiteLog: Toggle Log Level Visibility"
+        },
+        {
+          "command": "litelog-highlighter.toggleView",
+          "title": "LiteLog: Toggle Filtered View"
         }
-      ]
-    }
+      ],
+      "menus": {
+        "editor/context": [
+          {
+            "when": "editorHasSelection",
+            "command": "litelog-highlighter.highlightSelected",
+            "group": "litelog@1"
+          },
+          {
+            "command": "litelog-highlighter.highlightRegex",
+            "group": "litelog@2"
+          },
+          {
+            "command": "litelog-highlighter.clearHighlight",
+            "group": "litelog@3"
+          },
+          {
+            "command": "litelog-highlighter.toggleLogLevel",
+            "group": "litelog@4"
+          },
+          {
+            "command": "litelog-highlighter.toggleView",
+            "group": "litelog@5"
+          }
+        ]
+      }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
