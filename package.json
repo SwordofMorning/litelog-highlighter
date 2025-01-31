@@ -32,6 +32,10 @@
         "title": "LiteLog: Highlight Lines by Pattern"
       },
       {
+        "command": "litelog-highlighter.highlightRegex",
+        "title": "LiteLog: Highlight Lines by Regex"
+      },
+      {
         "command": "litelog-highlighter.highlightSelected",
         "title": "LiteLog: Highlight Selected Content"
       },
@@ -48,8 +52,12 @@
           "group": "litelog@1"
         },
         {
-          "command": "litelog-highlighter.clearHighlight",
+          "command": "litelog-highlighter.highlightRegex",
           "group": "litelog@2"
+        },
+        {
+          "command": "litelog-highlighter.clearHighlight",
+          "group": "litelog@3"
         }
       ]
     }

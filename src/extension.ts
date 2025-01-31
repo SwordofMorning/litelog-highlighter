@@ -4,9 +4,11 @@ import * as vscode from 'vscode';
 let highlightDecorator: vscode.TextEditorDecorationType;
 
 // Highlight function to reuse logic
-async function performHighlight(pattern: string, editor: vscode.TextEditor) {
+async function performHighlight(pattern: string, editor: vscode.TextEditor, isRegex: boolean = false) {
     try {
-        const regexp = new RegExp(pattern);
+        // If not regex, escape special characters
+        const regexPattern = isRegex ? pattern : pattern.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regexp = new RegExp(regexPattern);
         const document = editor.document;
         const decorationsArray: vscode.Range[] = [];
 
@@ -51,17 +53,39 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
-            // Get user input for pattern matching
             const pattern = await vscode.window.showInputBox({
-                placeHolder: "Enter text or regex pattern to match",
-                prompt: "Will highlight all lines containing this pattern"
+                placeHolder: "Enter text pattern to match",
+                prompt: "Will highlight all lines containing this text"
             });
 
             if (!pattern) {
-                return; // User cancelled input
+                return;
             }
 
-            await performHighlight(pattern, editor);
+            await performHighlight(pattern, editor, false);
+        }
+    );
+
+    // Register highlight regex command
+    let highlightRegexCommand = vscode.commands.registerCommand(
+        'litelog-highlighter.highlightRegex',
+        async () => {
+            const editor = vscode.window.activeTextEditor;
+            if (!editor) {
+                vscode.window.showInformationMessage('Please open a log file');
+                return;
+            }
+
+            const pattern = await vscode.window.showInputBox({
+                placeHolder: "Enter regex pattern (e.g., \\d{2}:\\d{2}:\\d{2})",
+                prompt: "Will highlight all lines matching this regex"
+            });
+
+            if (!pattern) {
+                return;
+            }
+
+            await performHighlight(pattern, editor, true);
         }
     );
 
@@ -83,9 +107,7 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
-            // Escape special regex characters in the selected text
-            const escapedText = selectedText.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-            await performHighlight(escapedText, editor);
+            await performHighlight(selectedText, editor, false);
         }
     );
 
@@ -98,7 +120,6 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
-            // Clear all highlights
             editor.setDecorations(highlightDecorator, []);
             vscode.window.showInformationMessage('All highlights cleared');
         }
@@ -106,6 +127,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Register commands
     context.subscriptions.push(highlightPatternCommand);
+    context.subscriptions.push(highlightRegexCommand);
     context.subscriptions.push(highlightSelectedCommand);
     context.subscriptions.push(clearHighlightCommand);
 }
