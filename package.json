@@ -2,7 +2,7 @@
   "name": "litelog-highlighter",
   "displayName": "litelog-highlighter",
   "description": "highlighter for litelog",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "publisher": "SwordofMorning",
   "repository": {
     "type": "git",
